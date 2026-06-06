@@ -336,7 +336,39 @@ tl.from("#s1-bg",       { opacity: 0, duration: 0.6 }, 0)
   .from("#s7-foot",      { y: 20, opacity: 0, duration: 0.4 }, 25.85);
 
 window.__timelines["main"] = tl;
-tl.play();
+
+const bgm = new Audio("assets/bgm_foxtrot.wav");
+bgm.loop = true;
+bgm.volume = 0.7;
+
+// 자동재생 시도 — 브라우저가 허용하면 바로 시작
+const autoStart = () => {
+  tl.play();
+  bgm.play().catch(() => {
+    // 자동재생 차단 시 클릭 오버레이 표시
+    document.getElementById("start-overlay").style.display = "flex";
+  });
+};
+
+document.getElementById("start-overlay").addEventListener("click", () => {
+  document.getElementById("start-overlay").style.display = "none";
+  tl.restart();
+  bgm.currentTime = 0;
+  bgm.play();
+});
+
+autoStart();
 </script>
+
+<div id="start-overlay" style="
+  display:none; position:fixed; inset:0; z-index:9999;
+  background:rgba(0,0,0,0.75); color:#fff;
+  flex-direction:column; align-items:center; justify-content:center;
+  font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  cursor:pointer;
+">
+  <div style="font-size:72px; margin-bottom:24px;">▶</div>
+  <div style="font-size:40px; font-weight:700;">터치하면 시작됩니다</div>
+</div>
 </body>
 </html>
