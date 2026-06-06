@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1080, height=1920" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 1080px; height: 1920px;
+      overflow: hidden;
+      background: #0a0a0f;
+      font-family: 'Apple SD Gothic Neo', 'AppleSDGothicNeo-Heavy', 'Malgun Gothic', sans-serif;
+    }
+    #root { width: 1080px; height: 1920px; position: relative; overflow: hidden; }
+    .clip { position: absolute; }
+    img { display: block; }
+
+    /* ───────── SCENE 1 — 타이틀 ───────── */
+    #s1-bg {
+      width: 1080px; height: 1920px; top: 0; left: 0;
+      background: linear-gradient(155deg, #0d0d1a 0%, #0a1628 55%, #0d0d1a 100%);
+    }
+    #s1-grid {
+      width: 1080px; height: 1920px; top: 0; left: 0;
+      background-image:
+        linear-gradient(rgba(255,200,80,.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,200,80,.04) 1px, transparent 1px);
+      background-size: 72px 72px;
+    }
+    #s1-orb {
+      width: 680px; height: 680px; top: 580px; left: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 40%, rgba(255,190,50,.22) 0%, rgba(255,140,0,.10) 55%, transparent 72%);
+      filter: blur(44px);
+    }
+    #s1-label {
+      top: 460px; left: 0; width: 1080px;
+      text-align: center; font-size: 36px; font-weight: 700;
+      letter-spacing: 14px; color: rgba(255,200,80,.82);
+    }
+    #s1-title-l1 {
+      top: 558px; left: 0; width: 1080px;
+      text-align: center; font-size: 152px; font-weight: 900;
+      line-height: 1; color: #ffffff; word-break: keep-all;
+    }
+    #s1-title-l2 {
+      top: 724px; left: 0; width: 1080px;
+      text-align: center; font-size: 152px; font-weight: 900;
+      line-height: 1; color: #ffc840; word-break: keep-all;
+    }
+    #s1-sub {
+      top: 910px; left: 0; width: 1080px;
+      text-align: center; font-size: 44px; font-weight: 400;
+      color: rgba(255,255,255,.72); letter-spacing: 4px; word-break: keep-all;
+    }
+    #s1-divider {
+      width: 220px; height: 3px; top: 1010px; left: 430px;
+      background: linear-gradient(90deg, transparent, #ffc840, transparent);
+    }
+    #s1-tagline {
+      top: 1058px; left: 0; width: 1080px;
+      text-align: center; font-size: 36px; font-weight: 500;
+      color: rgba(255,200,80,.76); letter-spacing: 3px; word-break: keep-all;
+    }
+    #s1-bar-track {
+      top: 1680px; left: 140px; width: 800px; height: 4px;
+      background: rgba(255,200,80,.18); border-radius: 2px; overflow: hidden;
+    }
+    #s1-bar-fill {
+      height: 4px; width: 0; background: #ffc840; border-radius: 2px;
+    }
+
+    /* ───────── COVER SCENES — 공통 ───────── */
+    .c-bg   { width: 1080px; height: 1920px; top: 0; left: 0; }
+    .c-orb  {
+      width: 600px; height: 600px; top: 400px; left: 240px;
+      border-radius: 50%; filter: blur(52px);
+    }
+    .c-num  {
+      top: 208px; left: 0; width: 1080px;
+      text-align: center; font-size: 28px; font-weight: 700; letter-spacing: 10px;
+    }
+    .c-frame {
+      width: 840px; height: 1160px; top: 284px; left: 120px;
+      border-radius: 16px; overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,.88);
+    }
+    .c-frame img { width: 100%; height: 100%; object-fit: cover; }
+    .c-title {
+      top: 1510px; left: 0; width: 1080px; padding: 0 60px;
+      text-align: center; font-size: 50px; font-weight: 900;
+      line-height: 1.35; color: #ffffff; word-break: keep-all;
+    }
+    .c-author {
+      top: 1664px; left: 0; width: 1080px;
+      text-align: center; font-size: 32px; font-weight: 500; letter-spacing: 4px;
+    }
+    .c-bar {
+      top: 1754px; left: 200px; width: 680px; height: 3px; border-radius: 2px;
+    }
+
+    /* scene-specific palettes */
+    #s2-bg  { background: linear-gradient(155deg, #12100e, #1c1508, #12100e); }
+    #s2-orb { background: radial-gradient(circle at 40% 40%, rgba(255,190,50,.24), rgba(200,100,0,.11) 55%, transparent 75%); }
+    #s2-num, #s2-author { color: rgba(255,200,80,.82); }
+    #s2-bar { background: linear-gradient(90deg, transparent, #ffc840, transparent); }
+
+    #s3-bg  { background: linear-gradient(155deg, #0f1610, #0d1f10, #0f1610); }
+    #s3-orb { background: radial-gradient(circle at 40% 40%, rgba(80,220,130,.22), rgba(40,160,80,.10) 55%, transparent 75%); }
+    #s3-num, #s3-author { color: rgba(80,220,130,.82); }
+    #s3-bar { background: linear-gradient(90deg, transparent, #50dc82, transparent); }
+
+    #s4-bg  { background: linear-gradient(155deg, #0e0c1c, #160f28, #0e0c1c); }
+    #s4-orb { background: radial-gradient(circle at 40% 40%, rgba(150,100,255,.24), rgba(80,40,200,.11) 55%, transparent 75%); }
+    #s4-num, #s4-author { color: rgba(180,140,255,.82); }
+    #s4-bar { background: linear-gradient(90deg, transparent, #b48cff, transparent); }
+
+    #s5-bg  { background: linear-gradient(155deg, #0a0e15, #080c14, #0a0e15); }
+    #s5-orb { background: radial-gradient(circle at 40% 40%, rgba(60,140,255,.22), rgba(20,80,200,.10) 55%, transparent 75%); }
+    #s5-num, #s5-author { color: rgba(100,180,255,.82); }
+    #s5-bar { background: linear-gradient(90deg, transparent, #64b4ff, transparent); }
+
+    #s6-bg  { background: linear-gradient(155deg, #100c0a, #1a1008, #100c0a); }
+    #s6-orb { background: radial-gradient(circle at 40% 40%, rgba(255,160,60,.24), rgba(200,80,20,.11) 55%, transparent 75%); }
+    #s6-num, #s6-author { color: rgba(255,170,80,.82); }
+    #s6-bar { background: linear-gradient(90deg, transparent, #ffa03c, transparent); }
+
+    /* ───────── SCENE 7 — 엔딩 ───────── */
+    #s7-bg {
+      width: 1080px; height: 1920px; top: 0; left: 0;
+      background: linear-gradient(155deg, #0a0a0f, #0c1020, #0a0a0f);
+    }
+    #s7-orb {
+      width: 900px; height: 900px; top: 460px; left: 90px;
+      border-radius: 50%; filter: blur(60px);
+      background: radial-gradient(circle at 50% 50%, rgba(255,200,80,.18), rgba(255,140,0,.08) 55%, transparent 75%);
+    }
+    #s7-brand {
+      top: 560px; left: 0; width: 1080px;
+      text-align: center; font-size: 50px; font-weight: 700;
+      letter-spacing: 18px; color: rgba(255,200,80,.88);
+    }
+    #s7-main {
+      top: 660px; left: 0; width: 1080px;
+      text-align: center; font-size: 104px; font-weight: 900;
+      line-height: 1.15; color: #ffffff; word-break: keep-all;
+    }
+    #s7-highlight {
+      top: 874px; left: 0; width: 1080px;
+      text-align: center; font-size: 104px; font-weight: 900;
+      line-height: 1.15; color: #ffc840; word-break: keep-all;
+    }
+    #s7-sub {
+      top: 1040px; left: 0; width: 1080px; padding: 0 80px;
+      text-align: center; font-size: 40px; font-weight: 400;
+      color: rgba(255,255,255,.68); line-height: 1.65;
+      letter-spacing: 2px; word-break: keep-all;
+    }
+    #s7-cta-box {
+      top: 1218px; left: 160px; width: 760px; height: 116px;
+      background: #ffc840; border-radius: 58px;
+    }
+    #s7-cta-text {
+      top: 1248px; left: 0; width: 1080px;
+      text-align: center; font-size: 46px; font-weight: 900;
+      color: #0a0a0f; letter-spacing: 2px; word-break: keep-all;
+    }
+    #s7-foot {
+      top: 1395px; left: 0; width: 1080px;
+      text-align: center; font-size: 28px;
+      color: rgba(255,200,80,.52); letter-spacing: 6px;
+    }
+  </style>
+</head>
+<body>
+<div id="root"
+     data-composition-id="main"
+     data-start="0"
+     data-duration="28"
+     data-width="1080"
+     data-height="1920">
+
+  <!-- SCENE 1 — 타이틀 (0–4s) -->
+  <div id="s1-bg"       class="clip" data-start="0" data-duration="4" data-track-index="1"></div>
+  <div id="s1-grid"     class="clip" data-start="0" data-duration="4" data-track-index="2"></div>
+  <div id="s1-orb"      class="clip" data-start="0" data-duration="4" data-track-index="3"></div>
+  <div id="s1-label"    class="clip" data-start="0" data-duration="4" data-track-index="4">ONESHOT EBOOK</div>
+  <div id="s1-title-l1" class="clip" data-start="0" data-duration="4" data-track-index="5">전자책</div>
+  <div id="s1-title-l2" class="clip" data-start="0" data-duration="4" data-track-index="6">쓰기</div>
+  <div id="s1-sub"      class="clip" data-start="0" data-duration="4" data-track-index="7">AI와 함께하는 글쓰기 혁명</div>
+  <div id="s1-divider"  class="clip" data-start="0" data-duration="4" data-track-index="8"></div>
+  <div id="s1-tagline"  class="clip" data-start="0" data-duration="4" data-track-index="9">누구나 작가가 되는 시대</div>
+  <div id="s1-bar-track" class="clip" data-start="0" data-duration="4" data-track-index="10">
+    <div id="s1-bar-fill"></div>
+  </div>
+
+  <!-- SCENE 2 — 나보다 나를 더 잘 아는 AI (4–8s) -->
+  <div id="s2-bg"    class="clip c-bg"    data-start="4" data-duration="4" data-track-index="1"></div>
+  <div id="s2-orb"   class="clip c-orb"   data-start="4" data-duration="4" data-track-index="2"></div>
+  <div id="s2-num"   class="clip c-num"   data-start="4" data-duration="4" data-track-index="3">01 / 05</div>
+  <div id="s2-frame" class="clip c-frame" data-start="4" data-duration="4" data-track-index="4">
+    <img src="assets/cover1.png" alt="나보다 나를 더 잘 아는 AI" />
+  </div>
+  <div id="s2-title"  class="clip c-title"  data-start="4" data-duration="4" data-track-index="5">나보다 나를<br>더 잘 아는 AI</div>
+  <div id="s2-author" class="clip c-author" data-start="4" data-duration="4" data-track-index="6">원샷 지음</div>
+  <div id="s2-bar"    class="clip c-bar"    data-start="4" data-duration="4" data-track-index="7"></div>
+
+  <!-- SCENE 3 — 어머니 하나 사드릴까 (8–12s) -->
+  <div id="s3-bg"    class="clip c-bg"    data-start="8" data-duration="4" data-track-index="1"></div>
+  <div id="s3-orb"   class="clip c-orb"   data-start="8" data-duration="4" data-track-index="2"></div>
+  <div id="s3-num"   class="clip c-num"   data-start="8" data-duration="4" data-track-index="3">02 / 05</div>
+  <div id="s3-frame" class="clip c-frame" data-start="8" data-duration="4" data-track-index="4">
+    <img src="assets/cover2.jpg" alt="어머니 하나 사드릴까" />
+  </div>
+  <div id="s3-title"  class="clip c-title"  data-start="8" data-duration="4" data-track-index="5">어머니 하나 사드릴까<br>AI 로봇 시대</div>
+  <div id="s3-author" class="clip c-author" data-start="8" data-duration="4" data-track-index="6">원샷 지음</div>
+  <div id="s3-bar"    class="clip c-bar"    data-start="8" data-duration="4" data-track-index="7"></div>
+
+  <!-- SCENE 4 — AI로 나를 브랜딩하다 (12–16s) -->
+  <div id="s4-bg"    class="clip c-bg"    data-start="12" data-duration="4" data-track-index="1"></div>
+  <div id="s4-orb"   class="clip c-orb"   data-start="12" data-duration="4" data-track-index="2"></div>
+  <div id="s4-num"   class="clip c-num"   data-start="12" data-duration="4" data-track-index="3">03 / 05</div>
+  <div id="s4-frame" class="clip c-frame" data-start="12" data-duration="4" data-track-index="4">
+    <img src="assets/cover3.png" alt="AI로 나를 브랜딩하다" />
+  </div>
+  <div id="s4-title"  class="clip c-title"  data-start="12" data-duration="4" data-track-index="5">AI로 나를<br>브랜딩하다</div>
+  <div id="s4-author" class="clip c-author" data-start="12" data-duration="4" data-track-index="6">7인 공저</div>
+  <div id="s4-bar"    class="clip c-bar"    data-start="12" data-duration="4" data-track-index="7"></div>
+
+  <!-- SCENE 5 — Robot noir (16–20s) -->
+  <div id="s5-bg"    class="clip c-bg"    data-start="16" data-duration="4" data-track-index="1"></div>
+  <div id="s5-orb"   class="clip c-orb"   data-start="16" data-duration="4" data-track-index="2"></div>
+  <div id="s5-num"   class="clip c-num"   data-start="16" data-duration="4" data-track-index="3">04 / 05</div>
+  <div id="s5-frame" class="clip c-frame" data-start="16" data-duration="4" data-track-index="4">
+    <img src="assets/cover4.jpg" alt="밀려오는 AI 로봇 시대" />
+  </div>
+  <div id="s5-title"  class="clip c-title"  data-start="16" data-duration="4" data-track-index="5">밀려오는<br>AI 로봇 시대</div>
+  <div id="s5-author" class="clip c-author" data-start="16" data-duration="4" data-track-index="6">원샷 지음</div>
+  <div id="s5-bar"    class="clip c-bar"    data-start="16" data-duration="4" data-track-index="7"></div>
+
+  <!-- SCENE 6 — Robot in store (20–24s) -->
+  <div id="s6-bg"    class="clip c-bg"    data-start="20" data-duration="4" data-track-index="1"></div>
+  <div id="s6-orb"   class="clip c-orb"   data-start="20" data-duration="4" data-track-index="2"></div>
+  <div id="s6-num"   class="clip c-num"   data-start="20" data-duration="4" data-track-index="3">05 / 05</div>
+  <div id="s6-frame" class="clip c-frame" data-start="20" data-duration="4" data-track-index="4">
+    <img src="assets/cover5.jpg" alt="AI와 함께 살아가는 법" />
+  </div>
+  <div id="s6-title"  class="clip c-title"  data-start="20" data-duration="4" data-track-index="5">AI와 함께<br>살아가는 법</div>
+  <div id="s6-author" class="clip c-author" data-start="20" data-duration="4" data-track-index="6">원샷 지음</div>
+  <div id="s6-bar"    class="clip c-bar"    data-start="20" data-duration="4" data-track-index="7"></div>
+
+  <!-- SCENE 7 — 엔딩 (24–28s) -->
+  <div id="s7-bg"       class="clip" data-start="24" data-duration="4" data-track-index="1"></div>
+  <div id="s7-orb"      class="clip" data-start="24" data-duration="4" data-track-index="2"></div>
+  <div id="s7-brand"    class="clip" data-start="24" data-duration="4" data-track-index="3">ONESHOT</div>
+  <div id="s7-main"     class="clip" data-start="24" data-duration="4" data-track-index="4">당신도</div>
+  <div id="s7-highlight" class="clip" data-start="24" data-duration="4" data-track-index="5">작가입니다</div>
+  <div id="s7-sub"      class="clip" data-start="24" data-duration="4" data-track-index="6">AI와 함께라면<br>전자책 출판은 현실입니다</div>
+  <div id="s7-cta-box"  class="clip" data-start="24" data-duration="4" data-track-index="7"></div>
+  <div id="s7-cta-text" class="clip" data-start="24" data-duration="4" data-track-index="8">지금 시작하세요</div>
+  <div id="s7-foot"     class="clip" data-start="24" data-duration="4" data-track-index="9">AI 전자책 스터디</div>
+
+</div>
+<script>
+window.__timelines = window.__timelines || {};
+const tl = gsap.timeline({ paused: true });
+
+// SCENE 1 — 타이틀 (0–4s)
+tl.from("#s1-bg",       { opacity: 0, duration: 0.6 }, 0)
+  .from("#s1-grid",     { opacity: 0, duration: 0.8 }, 0.2)
+  .from("#s1-orb",      { scale: 0.3, opacity: 0, duration: 1.2, ease: "power2.out" }, 0)
+  .from("#s1-label",    { y: -30, opacity: 0, duration: 0.5, ease: "back.out(2)" }, 0.4)
+  .from("#s1-title-l1", { y: 80, opacity: 0, duration: 0.65, ease: "expo.out" }, 0.55)
+  .from("#s1-title-l2", { y: 80, opacity: 0, duration: 0.65, ease: "expo.out" }, 0.7)
+  .from("#s1-sub",      { y: 28, opacity: 0, duration: 0.5 }, 0.9)
+  .from("#s1-divider",  { scaleX: 0, opacity: 0, duration: 0.6, ease: "power2.out", transformOrigin: "center center" }, 1.05)
+  .from("#s1-tagline",  { y: 20, opacity: 0, duration: 0.5 }, 1.15)
+  .from("#s1-bar-track",{ opacity: 0, duration: 0.3 }, 1.3)
+  .to("#s1-bar-fill",   { width: 800, duration: 3.2, ease: "none" }, 0.8)
+
+// SCENE 2 — 나보다 나를 더 잘 아는 AI (4–8s)
+  .from("#s2-bg",     { opacity: 0, duration: 0.4 }, 4)
+  .from("#s2-orb",    { scale: 0.4, opacity: 0, duration: 1.0, ease: "power2.out" }, 4)
+  .from("#s2-num",    { y: -20, opacity: 0, duration: 0.4 }, 4.3)
+  .from("#s2-frame",  { y: 110, opacity: 0, scaleX: 0.94, duration: 0.75, ease: "expo.out" }, 4.2)
+  .from("#s2-title",  { y: 40, opacity: 0, duration: 0.55, ease: "power3.out" }, 4.75)
+  .from("#s2-author", { y: 24, opacity: 0, duration: 0.4 }, 5.0)
+  .from("#s2-bar",    { scaleX: 0, opacity: 0, duration: 0.5, transformOrigin: "center center" }, 5.15)
+
+// SCENE 3 — 어머니 하나 사드릴까 (8–12s)
+  .from("#s3-bg",     { opacity: 0, duration: 0.4 }, 8)
+  .from("#s3-orb",    { scale: 0.4, opacity: 0, duration: 1.0, ease: "power2.out" }, 8)
+  .from("#s3-num",    { y: -20, opacity: 0, duration: 0.4 }, 8.3)
+  .from("#s3-frame",  { x: -110, opacity: 0, duration: 0.75, ease: "expo.out" }, 8.2)
+  .from("#s3-title",  { y: 40, opacity: 0, duration: 0.55 }, 8.75)
+  .from("#s3-author", { y: 24, opacity: 0, duration: 0.4 }, 9.0)
+  .from("#s3-bar",    { scaleX: 0, opacity: 0, duration: 0.5, transformOrigin: "center center" }, 9.15)
+
+// SCENE 4 — AI로 나를 브랜딩하다 (12–16s)
+  .from("#s4-bg",     { opacity: 0, duration: 0.4 }, 12)
+  .from("#s4-orb",    { scale: 0.4, opacity: 0, duration: 1.0, ease: "power2.out" }, 12)
+  .from("#s4-num",    { y: -20, opacity: 0, duration: 0.4 }, 12.3)
+  .from("#s4-frame",  { y: -110, opacity: 0, scaleX: 0.94, duration: 0.75, ease: "expo.out" }, 12.2)
+  .from("#s4-title",  { y: 40, opacity: 0, duration: 0.55 }, 12.75)
+  .from("#s4-author", { y: 24, opacity: 0, duration: 0.4 }, 13.0)
+  .from("#s4-bar",    { scaleX: 0, opacity: 0, duration: 0.5, transformOrigin: "center center" }, 13.15)
+
+// SCENE 5 — Robot noir (16–20s)
+  .from("#s5-bg",     { opacity: 0, duration: 0.4 }, 16)
+  .from("#s5-orb",    { scale: 0.4, opacity: 0, duration: 1.0, ease: "power2.out" }, 16)
+  .from("#s5-num",    { y: -20, opacity: 0, duration: 0.4 }, 16.3)
+  .from("#s5-frame",  { x: 110, opacity: 0, duration: 0.75, ease: "expo.out" }, 16.2)
+  .from("#s5-title",  { y: 40, opacity: 0, duration: 0.55 }, 16.75)
+  .from("#s5-author", { y: 24, opacity: 0, duration: 0.4 }, 17.0)
+  .from("#s5-bar",    { scaleX: 0, opacity: 0, duration: 0.5, transformOrigin: "center center" }, 17.15)
+
+// SCENE 6 — Robot in store (20–24s)
+  .from("#s6-bg",     { opacity: 0, duration: 0.4 }, 20)
+  .from("#s6-orb",    { scale: 0.4, opacity: 0, duration: 1.0, ease: "power2.out" }, 20)
+  .from("#s6-num",    { y: -20, opacity: 0, duration: 0.4 }, 20.3)
+  .from("#s6-frame",  { scale: 0.82, opacity: 0, duration: 0.85, ease: "expo.out", transformOrigin: "center center" }, 20.2)
+  .from("#s6-title",  { y: 40, opacity: 0, duration: 0.55 }, 20.75)
+  .from("#s6-author", { y: 24, opacity: 0, duration: 0.4 }, 21.0)
+  .from("#s6-bar",    { scaleX: 0, opacity: 0, duration: 0.5, transformOrigin: "center center" }, 21.15)
+
+// SCENE 7 — 엔딩 (24–28s)
+  .from("#s7-bg",        { opacity: 0, duration: 0.5 }, 24)
+  .from("#s7-orb",       { scale: 0.2, opacity: 0, duration: 1.5, ease: "power2.out" }, 24)
+  .from("#s7-brand",     { y: -28, opacity: 0, duration: 0.5, ease: "back.out(2)" }, 24.3)
+  .from("#s7-main",      { y: 60, opacity: 0, duration: 0.6, ease: "expo.out" }, 24.5)
+  .from("#s7-highlight", { y: 60, opacity: 0, duration: 0.6, ease: "expo.out" }, 24.65)
+  .from("#s7-sub",       { y: 30, opacity: 0, duration: 0.5 }, 24.9)
+  .from("#s7-cta-box",   { scaleX: 0, opacity: 0, duration: 0.55, ease: "back.out(1.8)", transformOrigin: "center center" }, 25.2)
+  .from("#s7-cta-text",  { opacity: 0, duration: 0.3 }, 25.62)
+  .from("#s7-foot",      { y: 20, opacity: 0, duration: 0.4 }, 25.85);
+
+window.__timelines["main"] = tl;
+</script>
+</body>
+</html>
