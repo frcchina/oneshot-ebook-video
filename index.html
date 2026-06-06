@@ -355,11 +355,10 @@ bgm.loop = true;
 bgm.volume = 0.7;
 
 const overlay = document.getElementById("start-overlay");
-const tl = window.__timelines["main"];
 
 overlay.addEventListener("click", () => {
   overlay.style.display = "none";
-  tl.restart();
+  window.__timelines["main"].restart();
   bgm.currentTime = 0;
   bgm.play();
 });
